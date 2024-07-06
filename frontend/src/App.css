@@ -1,0 +1,38 @@
+.filter {
+  display: flex;
+  div {
+    padding-right: 10px;
+  }
+}
+
+.filter-price {
+  width: 130px;
+}
+.filter-storage {
+  width: 150px;
+}
+.filter-memory {
+  width: 150px;
+  
+}
+.filter-cpuCompare {
+  width: 170px;
+}
+.cpuBlacklist {
+  width: 250px;
+}
+
+.tableContainer {
+  width: 1000px;
+}
+
+.containerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.title {
+  padding-bottom: 30px;;
+}

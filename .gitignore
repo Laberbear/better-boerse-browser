@@ -1,0 +1,7 @@
+output.json
+output.log
+node_modules
+compareCache.json
+cpuCache.json
+data.json
+websiteCache.json
