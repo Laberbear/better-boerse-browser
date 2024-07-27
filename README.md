@@ -3,8 +3,10 @@
 ### This project is not affiliated with Hetzner at all
 
 Browsing the Hetzner Serverbörse has never been easier!
+
 Uses the https://technical.city for Performance Comparisons
-Running this code might conflict with the usage policies of Hetzner of Technical City, so use on your own risk.
+
+Running this code might conflict with the usage policies of Hetzner or Technical City, so use on your own risk.
 
 ## Features
 - Filtering that actually makes sense
