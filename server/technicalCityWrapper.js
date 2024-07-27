@@ -53,7 +53,7 @@ async function compareCPUs(cpu1, cpu2) {
   const sanitizedCpu1 = cpu1.replace(/\s/gm, '-');
   const sanitizedCpu2 = cpu2.replace(/\s/gm, '-');
   if (sanitizedCpu1 === sanitizedCpu2) {
-    return null;
+    return { faster: { cpuName: sanitizedCpu1, cpuIndex: 0, amountInPercent: 0 } };
   }
   if (COMPARE_CACHE[`${sanitizedCpu1}${sanitizedCpu2}`]) {
     // console.log('Compare Cache Hit!');

@@ -15,7 +15,7 @@ Running this code might conflict with the usage policies of Hetzner of Technical
 
 ![Screenshot of the App](image.png "Screenshot of the App")
 
-## How to run:
+## How to run
 
 If you just want a CLI/File Output, you can use the CLI script:
 ```
@@ -29,4 +29,17 @@ For the web app simply use Docker:
 ```
 docker run -p 3001:3001 laberbear/better-boerse-browser:0.0.4
 Go to http://localhost:3001
+```
+
+## How to develop
+
+Start Web Server
+```
+cd server && npm run dev
+```
+
+Start React App
+
+```
+cd frontend && npm run start
 ```

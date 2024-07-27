@@ -47,25 +47,25 @@ async function getDataFromDisk(options) {
   if (options.minimumStorage) {
     try {
       minimumStorage = parseInt(options.minimumStorage, 10);
-    } catch (error) {}
+    } catch (error) { }
   }
   let minimumMemory = 0;
   if (options.minimumMemory) {
     try {
       minimumMemory = parseInt(options.minimumMemory, 10);
-    } catch (error) {}
+    } catch (error) { }
   }
   let minPrice = 0;
   if (options.minPrice) {
     try {
       minPrice = parseInt(options.minPrice, 10);
-    } catch (error) {}
+    } catch (error) { }
   }
   let maxPrice = 9999;
   if (options.maxPrice) {
     try {
       maxPrice = parseInt(options.maxPrice, 10);
-    } catch (error) {}
+    } catch (error) { }
   }
 
   console.log(`
@@ -97,6 +97,15 @@ async function getDataFromDisk(options) {
     });
     server.actualPrice = Math.round((server.price * 1.19 + 2.04) * 100) / 100;
     server.hddSum = sum;
+
+    server.ssd = null;
+    if (server.description && server.description.includes('SSD')) {
+      server.ssd = 'SATA'
+      if (server.description.includes('NVME')) {
+        server.ssd = 'NVME'
+      }
+    }
+    server.hasEcc = !!server.is_ecc;
 
     // Benchmarks
     const technicalCityName = await hetznerToTechnicalCity(server.cpu);
@@ -163,6 +172,8 @@ async function getDataFromDisk(options) {
     'actualPrice',
     'hddSum',
     'cpu',
+    'ssd',
+    'hasEcc',
     'comparison',
     'id',
     'link',

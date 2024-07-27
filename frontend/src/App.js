@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+/* eslint-disable react-hooks/exhaustive-deps */
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import Input from '@mui/joy/Input';
@@ -15,23 +15,38 @@ import Link from '@mui/joy/Link';
 import { visuallyHidden } from '@mui/utils';
 
 const BASE_BLACKLIST = ['AMD', 'Intel'];
+const DEFAULT_VALUES = {
+  minPrice: "0",
+  maxPrice: "200",
+  minimumStorage: "0",
+  minimumMemory: "0",
+  cpuToCompare: 'Core-i7-3770',
+  cpuBlacklist: [],
+  orderBy: 'price',
+  orderDirection: 'asc'
+}
 
 function App() {
   const [data, setData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [cpuBlacklistList, setCpuBlacklistList] = useState([]);
   const [options, setOptions] = useState({
-    minPrice: searchParams.get('minPrice') || 0,
-    maxPrice: searchParams.get('maxPrice') || 120,
-    minimumStorage: searchParams.get('minimumStorage') || 0,
-    minimumMemory: searchParams.get('minimumMemory') || 0,
-    cpuToCompare: searchParams.get('cpuToCompare') || 'Core-i7-3770',
-    cpuBlacklist: searchParams.getAll('cpuBlacklist') || [],
-    orderBy: searchParams.get('orderBy') || 'price',
-    orderDirection: searchParams.get('orderDirection') || 'asc'
+    minPrice: searchParams.get('minPrice') || parseInt(DEFAULT_VALUES.minPrice, 10),
+    maxPrice: searchParams.get('maxPrice') || parseInt(DEFAULT_VALUES.maxPrice, 10),
+    minimumStorage: searchParams.get('minimumStorage') || parseInt(DEFAULT_VALUES.minimumStorage, 10),
+    minimumMemory: searchParams.get('minimumMemory') || parseInt(DEFAULT_VALUES.minimumMemory, 10),
+    cpuToCompare: searchParams.get('cpuToCompare') || DEFAULT_VALUES.cpuToCompare,
+    cpuBlacklist: searchParams.getAll('cpuBlacklist') || DEFAULT_VALUES.cpuBlacklist,
+    orderBy: searchParams.get('orderBy') || DEFAULT_VALUES.orderBy,
+    orderDirection: searchParams.get('orderDirection') || DEFAULT_VALUES.orderDirection
   });
+  let initalRequest = false;
 
   useEffect(() => {
+    if (initalRequest) {
+      return;
+    }
+    initalRequest = true;
     const queryParams = Object.entries(options).map(([key, val]) => {
       if (Array.isArray(val)) {
         return val.map(v => `${key}=${v}`).join('&')
@@ -48,7 +63,6 @@ function App() {
       .catch(error => console.error(error));
   }, []);
   const handleblacklistchange = (event, newValue) => {
-    console.log('this blacklist change')
     handleChange({
       target: {
         name: 'cpuBlacklist',
@@ -57,7 +71,6 @@ function App() {
     })
   }
   const handlecpuCompareChange = (event, newValue) => {
-    console.log('this cpu compare change')
     handleChange({
       target: {
         name: 'cpuToCompare',
@@ -66,14 +79,11 @@ function App() {
     })
   }
   const handleChange = (event) => {
-    console.log(event);
-    console.log('handle change called', event.target.name, event.target.value)
     const newOptions = {
       ...options,
       [event.target.name]: event.target.value
     }
     setSearchParams('')
-    setOptions(newOptions);
     const queryParams = Object.entries(newOptions).map(([key, val]) => {
       if (Array.isArray(val)) {
         return val.map(v => `${key}=${v}`).join('&')
@@ -81,7 +91,19 @@ function App() {
         return `${key}=${val}`
       }
     }).join('&')
-    setSearchParams(newOptions);
+    for (const [key, value] of Object.entries(newOptions)) {
+      if (value === DEFAULT_VALUES[key]) {
+        delete newOptions[key];
+      }
+    }
+    setOptions(newOptions);
+    const newNewOptions = { ...newOptions }
+    for (const [key, value] of Object.entries(newNewOptions)) {
+      if (value === DEFAULT_VALUES[key] || value === '' || value === undefined || value === null) {
+        delete newNewOptions[key];
+      }
+    }
+    setSearchParams(newNewOptions);
     fetch(`api/servers?${queryParams}`)
       .then(response => response.json())
       .then(json => {
@@ -90,59 +112,78 @@ function App() {
       })
       .catch(error => console.error(error));
   }
-  
-const headCells = [
-  {
-    id: 'cpu',
-    label: 'CPU'
-  },
-  {
-    id: 'storage',
-    label: 'Storage Space'
-  },
-  {
-    id: 'memory',
-    label: 'Memory'
-  },
-  {
-    id: 'price',
-    label: 'Price'
-  },
-  {
-    id: 'performance',
-    label: 'Performance'
-  },
-];
-function onRequestSort(event, property) {
-  console.log('handle sort called', event, property)
-  const newOrderDirection = options.orderBy === property && options.orderDirection === 'asc' ? 'desc' : 'asc';
-  const newOrderBy = property;
-  const newOptions = {
-    ...options,
-    orderDirection: newOrderDirection,
-    orderBy: newOrderBy
-  }
-  setSearchParams('')
-  setOptions(newOptions);
-  const queryParams = Object.entries(newOptions).map(([key, val]) => {
-    if (Array.isArray(val)) {
-      return val.map(v => `${key}=${v}`).join('&')
-    } else {
-      return `${key}=${val}`
+
+  const headCells = [
+    {
+      id: 'cpu',
+      label: 'CPU'
+    },
+    {
+      id: 'storage',
+      label: 'Storage Space'
+    },
+    {
+      id: 'memory',
+      label: 'Memory'
+    },
+    {
+      id: 'price',
+      label: 'Price'
+    },
+    {
+      id: 'performance',
+      label: 'Performance'
+    },
+  ];
+  function onRequestSort(event, property) {
+    const newOrderDirection = options.orderBy === property && options.orderDirection === 'asc' ? 'desc' : 'asc';
+    const newOrderBy = property;
+    const newOptions = {
+      ...options,
+      orderDirection: newOrderDirection,
+      orderBy: newOrderBy
     }
-  }).join('&')
-  setSearchParams(newOptions);
-  fetch(`api/servers?${queryParams}`)
-    .then(response => response.json())
-    .then(json => {
-      setData(json)
-      setCpuBlacklistList([...new Set([...BASE_BLACKLIST, ...json.map(val => val.cpu), ...newOptions.cpuBlacklist])])
-    })
-    .catch(error => console.error(error));
-};
-const createSortHandler = (property) => (event) => {
-  onRequestSort(event, property);
-};
+    setSearchParams('')
+    const queryParams = Object.entries(newOptions).map(([key, val]) => {
+      if (Array.isArray(val)) {
+        return val.map(v => `${key}=${v}`).join('&')
+      } else {
+        return `${key}=${val}`
+      }
+    }).join('&')
+    setOptions(newOptions);
+    const newNewOptions = { ...newOptions }
+    for (const [key, value] of Object.entries(newNewOptions)) {
+      if (value === DEFAULT_VALUES[key] || value === '' || value === undefined || value === null) {
+        delete newNewOptions[key];
+      }
+    }
+    setSearchParams(newNewOptions);
+    fetch(`api/servers?${queryParams}`)
+      .then(response => response.json())
+      .then(json => {
+        setData(json)
+        setCpuBlacklistList([...new Set([...BASE_BLACKLIST, ...json.map(val => val.cpu), ...newOptions.cpuBlacklist])])
+      })
+      .catch(error => console.error(error));
+  };
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
+
+  function getPerformanceString(performanceData) {
+    if (!performanceData) {
+      return 'Not Available'
+    }
+    if (performanceData.amountInPercent === 0) {
+      return '🤌 Performance is Equal'
+    }
+    if (performanceData.cpuIndex === 0) {
+      return `👎 Slower by ${performanceData.amountInPercent}%\n(aggregated)`;
+    } else {
+      return `👍 Faster by ${performanceData.amountInPercent}%\n(aggregated)`;
+    }
+  }
   return (
     <div className="App">
       <div className='containerContainer'>
@@ -159,11 +200,11 @@ const createSortHandler = (property) => (event) => {
             </FormControl>
             <FormControl className="filter-storage">
               <FormLabel>Minimum Storage</FormLabel>
-              <Input type="number" defaultValue={options.minPrice} name="minimumStorage"></Input>
+              <Input type="number" defaultValue={options.minimumStorage} name="minimumStorage"></Input>
             </FormControl>
             <FormControl className="filter-memory">
               <FormLabel>Minimum Memory</FormLabel>
-              <Input type="number" defaultValue={options.minPrice} name="minimumMemory"></Input>
+              <Input type="number" defaultValue={options.minimumMemory} name="minimumMemory"></Input>
             </FormControl>
             <FormControl className="filter-cpuCompare">
               <FormLabel>CPU To Compare</FormLabel>
@@ -209,65 +250,64 @@ const createSortHandler = (property) => (event) => {
         <div className='tableContainer'>
           {!data ? 'Loading' : (<Table>
             <thead>
-      <tr>
-        {headCells.map((headCell) => {
-          const active = options.orderBy === headCell.id;
-          return (
-            <th
-              key={headCell.id}
-              aria-sort={
-                active ? { asc: 'ascending', desc: 'descending' }[options.orderDirection] : undefined
-              }
-            >
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <Link
-                underline="none"
-                color="neutral"
-                textColor={active ? 'primary.plainColor' : undefined}
-                component="button"
-                onClick={createSortHandler(headCell.id)}
-                fontWeight="lg"
-                startDecorator={
-                  headCell.numeric ? (
-                    <ArrowDownwardIcon sx={{ opacity: active ? 1 : 0 }} />
-                  ) : null
-                }
-                endDecorator={
-                  !headCell.numeric ? (
-                    <ArrowDownwardIcon sx={{ opacity: active ? 1 : 0 }} />
-                  ) : null
-                }
-                sx={{
-                  '& svg': {
-                    transition: '0.2s',
-                    transform:
-                      active && options.orderDirection === 'asc' ? 'rotate(0deg)' : 'rotate(180deg)',
-                  },
-                  '&:hover': { '& svg': { opacity: 1 } },
-                }}
-              >
-                {headCell.label}
-                {active ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {options.orderDirection === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
-                ) : null}
-              </Link>
-            </th>
-          );
-        })}
-      </tr>
+              <tr>
+                {headCells.map((headCell) => {
+                  const active = options.orderBy === headCell.id;
+                  return (
+                    <th
+                      key={headCell.id}
+                      aria-sort={
+                        active ? { asc: 'ascending', desc: 'descending' }[options.orderDirection] : undefined
+                      }
+                    >
+                      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                      <Link
+                        underline="none"
+                        color="neutral"
+                        textColor={active ? 'primary.plainColor' : undefined}
+                        component="button"
+                        onClick={createSortHandler(headCell.id)}
+                        fontWeight="lg"
+                        startDecorator={
+                          headCell.numeric ? (
+                            <ArrowDownwardIcon sx={{ opacity: active ? 1 : 0 }} />
+                          ) : null
+                        }
+                        endDecorator={
+                          !headCell.numeric ? (
+                            <ArrowDownwardIcon sx={{ opacity: active ? 1 : 0 }} />
+                          ) : null
+                        }
+                        sx={{
+                          '& svg': {
+                            transition: '0.2s',
+                            transform:
+                              active && options.orderDirection === 'asc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                          },
+                          '&:hover': { '& svg': { opacity: 1 } },
+                        }}
+                      >
+                        {headCell.label}
+                        {active ? (
+                          <Box component="span" sx={visuallyHidden}>
+                            {options.orderDirection === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                          </Box>
+                        ) : null}
+                      </Link>
+                    </th>
+                  );
+                })}
+              </tr>
             </thead>
             <tbody>
               {data.map((listValue, index) => {
                 return (
                   <tr key={index}>
-                    <td><a href={listValue.link}>{listValue.cpu}</a></td>
-                    <td>{listValue.hddSum}GB</td>
-                    <td>{listValue.ram_size}GB</td>
+                    <td><a target="_blank" rel="noopener noreferrer" href={listValue.link}>{listValue.cpu}</a></td>
+                    <td>{listValue.hddSum}GB <br></br>{listValue.ssd ? `(has ${listValue.ssd} SSD)` : ''}</td>
+                    <td>{listValue.ram_size}GB {listValue.hasEcc ? '(ECC)' : ''}</td>
                     <td>{listValue.actualPrice}€</td>
-                    <td>{!listValue.comparison ? 'Not Available' :
-                      ((listValue.comparison.faster.cpuIndex === 0 ? '👎 Slower' : '👍 Faster') + ` by ${listValue.comparison.faster.amountInPercent}%\n(aggregated)`)}</td>
+                    <td>{getPerformanceString(listValue?.comparison?.faster)}</td>
                   </tr>
                 );
               })}
