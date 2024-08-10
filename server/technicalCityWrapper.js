@@ -27,6 +27,9 @@ try {
 console.log(__dirname);
 
 async function getTechnicalCityCpuName(cpuString) {
+  if (cpuString.toLowerCase().includes('xeon')) {
+    cpuString = cpuString.replace(/(v|V)/, ' v')
+  }
   if (CPU_CACHE[cpuString] !== undefined) {
     // console.log('Data Cache Hit!');
     return CPU_CACHE[cpuString];
@@ -46,17 +49,21 @@ function cpuNameMatcher(aCpu, bCpu) {
   return aCpu === bCpu || bCpu.includes(aCpu) || aCpu.includes(bCpu);
 }
 
+function sanitizeCpuName(cpuName) {
+  return cpuName.replace(/\s/gm, '-')
+}
+
 async function compareCPUs(cpu1, cpu2) {
   if (!cpu2 || !cpu1) {
     return null;
   }
-  const sanitizedCpu1 = cpu1.replace(/\s/gm, '-');
-  const sanitizedCpu2 = cpu2.replace(/\s/gm, '-');
+  const sanitizedCpu1 = sanitizeCpuName(cpu1);
+  const sanitizedCpu2 = sanitizeCpuName(cpu2);;
   if (sanitizedCpu1 === sanitizedCpu2) {
     return { faster: { cpuName: sanitizedCpu1, cpuIndex: 0, amountInPercent: 0 } };
   }
   if (COMPARE_CACHE[`${sanitizedCpu1}${sanitizedCpu2}`]) {
-    // console.log('Compare Cache Hit!');
+    // console.log('Compare Cache Hit!', `${sanitizedCpu1}${sanitizedCpu2}`);
     return COMPARE_CACHE[`${sanitizedCpu1}${sanitizedCpu2}`];
   }
   console.log(`Compare Cache Miss! ${sanitizedCpu1} vs ${sanitizedCpu2}`);
@@ -78,7 +85,7 @@ async function compareCPUs(cpu1, cpu2) {
   const bechmarkText = resp.substring(benchmarkArea.tag0Start, benchmarkArea.tag1End);
 
   const doc = new Document(bechmarkText);
-  const benchmarkSummary = doc.querySelector('.gray_text').contents;
+  const benchmarkSummary = new Document(resp).querySelector('p').contents;
   const ratingBlocks = [...doc.querySelectorAll('.tab'), ...doc.querySelectorAll('.tabactive')];
   // get Rating numbers
   const ratings = ratingBlocks.map((ratingBlock) => {
@@ -96,11 +103,11 @@ async function compareCPUs(cpu1, cpu2) {
     return {
       results,
       name,
-      compareLink,
     };
   });
   const cpuName = benchmarkSummary.replace(/outperforms.*/, '').trim().replace(/\s/gm, '-');
-  const amountInPercent = parseInt(benchmarkSummary.replace(/.*by/, '').replace(/based.*/, '').replace('%', '').trim(), 10);
+  const amountInPercent = parseInt(benchmarkSummary.replace(/.*by.+?(?=\d)/, '').replace(/based.*/, '').replace('%', '').trim(), 10);
+  console.log(benchmarkSummary.replace(/.*by.+?(?=\d)/, '').replace(/based.*/, '').replace('%', '').trim())
   let cpuIndex = null;
   if (cpuNameMatcher(cpuName, sanitizedCpu1)) {
     cpuIndex = 0;
@@ -116,10 +123,13 @@ async function compareCPUs(cpu1, cpu2) {
     ratings,
     benchmarkSummary,
     faster,
+    compareLink
   };
   return {
     ratings,
     benchmarkSummary,
+    faster,
+    compareLink
   };
 }
 async function hetznerToTechnicalCity(hetznerCpu) {

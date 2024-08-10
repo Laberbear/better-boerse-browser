@@ -307,7 +307,8 @@ function App() {
                     <td>{listValue.hddSum}GB <br></br>{listValue.ssd ? `(has ${listValue.ssd} SSD)` : ''}</td>
                     <td>{listValue.ram_size}GB {listValue.hasEcc ? '(ECC)' : ''}</td>
                     <td>{listValue.actualPrice}€</td>
-                    <td>{getPerformanceString(listValue?.comparison?.faster)}</td>
+                    <td>{getPerformanceString(listValue?.comparison?.faster)} 
+                    <a target="_blank" rel="noopener noreferrer" href={listValue.comparison.compareLink}> 🔗</a></td>
                   </tr>
                 );
               })}
