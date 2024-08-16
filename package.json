@@ -1,0 +1,22 @@
+{
+  "name": "better-boerse-browser",
+  "version": "0.1.0",
+  "description": "Better Börse Browser (not affiliated with Hetzner at all)",
+  "main": "cli.js",
+  "packageManager": "pnpm@9.7.1",
+  "workspaces": [
+    "server",
+    "frontend"
+  ],
+  "devDependencies": {
+    "turbo": "^2.0.14",
+    "turbo-linux-64": "^2.0.14"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "deploy-docker": "bash deployRelease.sh",
+    "test-docker": "bash testRelease.sh"
+  },
+  "author": "Laberbear",
+  "license": "ISC"
+}

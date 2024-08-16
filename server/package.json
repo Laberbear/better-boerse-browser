@@ -1,11 +1,9 @@
 {
-  "name": "hetzner",
+  "name": "bbb-server",
   "version": "0.0.6",
   "description": "",
-  "main": "hetznerSB.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx nodemon server.js --ignore '*.json'"
+    "dev": "nodemon server.js --ignore '*.json'"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +13,8 @@
     "lodash": "^4.17.21",
     "node-fetch": "2.7.0",
     "queryselector-lite": "^0.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }

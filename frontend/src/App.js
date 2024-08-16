@@ -248,7 +248,8 @@ function App() {
           </div>
         </form>
         <div className='tableContainer'>
-          {!data ? 'Loading' : (<Table>
+          {!data ? 'Loading' : (<Table 
+          stickyHeader>
             <thead>
               <tr>
                 {headCells.map((headCell) => {

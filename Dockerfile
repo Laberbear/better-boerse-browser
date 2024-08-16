@@ -1,27 +1,33 @@
-FROM node:18-alpine as frontend
+FROM node:20-alpine as frontend
+ADD frontend/package.json /opt/frontend/package.json
+ADD package.json /opt/package.json
+RUN corepack enable
+ADD pnpm-lock.yaml /opt/pnpm-lock.yaml
+ADD pnpm-workspace.yaml /opt/pnpm-workspace.yaml
+WORKDIR /opt/frontend
+RUN pnpm install
 
-ADD frontend/package.json /opt/react/package.json
-ADD frontend/package-lock.json /opt/react/package-lock.json
-WORKDIR /opt/react
-RUN npm ci
-
-ADD frontend/src /opt/react/src
-ADD frontend/public /opt/react/public
+ADD frontend/src /opt/frontend/src
+ADD frontend/public /opt/frontend/public
 RUN npm run build
-FROM node:18-alpine as server
+FROM node:20-alpine as server
+ADD package.json /opt/package.json
 ADD server/package.json /opt/server/package.json
-ADD server/package-lock.json /opt/server/package-lock.json
+RUN corepack enable
+ADD pnpm-lock.yaml /opt/pnpm-lock.yaml
+ADD pnpm-workspace.yaml /opt/pnpm-workspace.yaml
 WORKDIR /opt/server
-RUN npm install -g forever
-RUN npm ci --production
+
+RUN pnpm --filter "bbb-server" install --prod --frozen-lockfile
 
 
 ADD server/server.js ./server.js
 ADD server/hetznerSB.js ./hetznerSB.js
 ADD server/technicalCityWrapper.js ./technicalCityWrapper.js
-COPY --from=frontend /opt/react/build ./public
+COPY --from=frontend /opt/frontend/build ./public
+
 # Add predownloaded caches if available
 ADD server/cpuCache.json ./cpuCache.json
 ADD server/compareCache.json ./compareCache.json
 ADD server/websiteCache.json ./websiteCache.json
-CMD forever server.js
+CMD node server.js

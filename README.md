@@ -22,26 +22,34 @@ Running this code might conflict with the usage policies of Hetzner or Technical
 If you just want a CLI/File Output, you can use the CLI script:
 ```
 First install the server dependencies:
-cd server && npm ci 
+cd server && pnpm install
 Then run the script:
 node cli.js
 ```
 
 For the web app simply use Docker:
 ```
-docker run -p 3001:3001 laberbear/better-boerse-browser:0.0.4
+docker run -d \
+    -p 3001:3001 \
+    --restart unless-stopped \
+    laberbear/better-boerse-browser:0.1.0
 Go to http://localhost:3001
 ```
 
 ## How to develop
 
-Start Web Server
-```
-cd server && npm run dev
-```
-
-Start React App
+First install dependencies (requires nvm to be installed before)
 
 ```
-cd frontend && npm run start
+nvm install 20
+nvm use 20
+npm install -g turbo
+corepack enable
+pnpm install
+```
+
+Then run the development environment with
+
+```
+pnpm dev
 ```

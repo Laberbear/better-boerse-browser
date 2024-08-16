@@ -1,4 +1,5 @@
 VERSION=$(node -p -e "require('./package.json').version")
 
 docker build -t laberbear/better-boerse-browser:$VERSION --target server . 
-docker push laberbear/better-boerse-browser:$VERSION
+
+docker run -p 3001:3001 laberbear/better-boerse-browser:$VERSION
