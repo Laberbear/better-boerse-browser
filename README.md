@@ -13,6 +13,7 @@ Running this code might conflict with the usage policies of Hetzner or Technical
 - Sorting
 - Proper Storage Space calculation
 - Performance Comparisons against a few common CPUs
+- Storing historical Serverbörsen Data in an SQLite Database
 - Docker Image: https://hub.docker.com/repository/docker/laberbear/better-boerse-browser
 
 ![Screenshot of the App](image.png "Screenshot of the App")
@@ -32,6 +33,7 @@ For the web app simply use Docker:
 docker run -d \
     -p 3001:3001 \
     --restart unless-stopped \
+    -v DATA_FOLDER_ON_HOST:/opt/data
     laberbear/better-boerse-browser:0.1.0
 Go to http://localhost:3001
 ```

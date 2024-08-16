@@ -1,0 +1,9 @@
+{
+  "schema": "./schema.js",
+  "out": "./drizzle",
+  "dialect": "sqlite",
+  "dbCredentials": {
+    "database": "bbb",
+    "url": "../data/sqlite.db"
+  }
+}

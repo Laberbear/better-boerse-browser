@@ -46,7 +46,7 @@ const init = async () => {
 setInterval(async () => {
   console.log('UPDATE DATA');
   await updateDataFromHetzner(true);
-}, 1000 * 60 * 30);
+}, 1000 * 60 * 5);
 
 process.on('unhandledRejection', (err) => {
   console.log(err);

@@ -11,6 +11,7 @@ const validOrderDirection = ['asc', 'desc'];
 const validComparisons = ['Core-i7-3770', 'Xeon-E-2276G']; // Technical City names
 
 const { orderBy: orderByFunc, pick } = require('lodash');
+const { bulkInsertServer } = require('./db');
 
 async function getDataFromDisk(options) {
   console.log('getting request', options);
@@ -203,6 +204,7 @@ async function updateDataFromHetzner(removeData = true) {
     existingData = newData;
   }
   const { server: servers } = existingData;
+  await bulkInsertServer(servers);
   for (const server of servers) {
     // Benchmarks
     const technicalCityName = await hetznerToTechnicalCity(server.cpu);
