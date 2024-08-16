@@ -23,4 +23,4 @@ FROM node:20-alpine as server
     COPY server /opt/server
     COPY --from=frontend /opt/frontend/build ./public
 
-    CMD node server.js
+    CMD pnpm migrate-db && node server.js
