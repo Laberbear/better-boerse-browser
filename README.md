@@ -9,6 +9,7 @@ Uses the https://technical.city for Performance Comparisons
 Running this code might conflict with the usage policies of Hetzner or Technical City, so use on your own risk.
 
 ## Features
+
 - Filtering that actually makes sense
 - Sorting
 - Proper Storage Space calculation
@@ -21,6 +22,7 @@ Running this code might conflict with the usage policies of Hetzner or Technical
 ## How to run
 
 If you just want a CLI/File Output, you can use the CLI script:
+
 ```
 First install the server dependencies:
 cd server && pnpm install
@@ -29,6 +31,7 @@ node cli.js
 ```
 
 For the web app simply use Docker:
+
 ```
 docker run -d \
     -p 3001:3001 \

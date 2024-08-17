@@ -1,4 +1,4 @@
-const { text, sqliteTable, real, int, uniqueIndex } = require("drizzle-orm/sqlite-core");
+const { text, sqliteTable, real, int, uniqueIndex } = require('drizzle-orm/sqlite-core');
 
 const servers = sqliteTable('servers', {
   id: text('id').notNull(),
@@ -16,10 +16,10 @@ const prices = sqliteTable('prices', {
   isFixed: text('is_fixed').notNull(),
   createdAt: int('created_at').notNull().$defaultFn(() => Date.now())
 }, prices => ({
-  priceServerIdIdx: uniqueIndex('price_server_id_unique_idx').on(prices.serverId, prices.price) 
+  priceServerIdIdx: uniqueIndex('price_server_id_unique_idx').on(prices.serverId, prices.price)
 }));
 
 module.exports = {
   servers,
   prices
-}
+};

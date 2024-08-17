@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-empty */
-/* eslint-disable no-await-in-loop */
+
 const getHetznerUrl = () => `https://www.hetzner.com/_resources/app/jsondata/live_data_sb.json?m=${Date.now()}`;
 
 const fetch = require('node-fetch');
@@ -48,25 +49,25 @@ async function getDataFromDisk(options) {
   if (options.minimumStorage) {
     try {
       minimumStorage = parseInt(options.minimumStorage, 10);
-    } catch (error) { }
+    } catch (error) {}
   }
   let minimumMemory = 0;
   if (options.minimumMemory) {
     try {
       minimumMemory = parseInt(options.minimumMemory, 10);
-    } catch (error) { }
+    } catch (error) {}
   }
   let minPrice = 0;
   if (options.minPrice) {
     try {
       minPrice = parseInt(options.minPrice, 10);
-    } catch (error) { }
+    } catch (error) {}
   }
   let maxPrice = 9999;
   if (options.maxPrice) {
     try {
       maxPrice = parseInt(options.maxPrice, 10);
-    } catch (error) { }
+    } catch (error) {}
   }
 
   console.log(`
@@ -101,9 +102,9 @@ async function getDataFromDisk(options) {
 
     server.ssd = null;
     if (server.description && server.description.includes('SSD')) {
-      server.ssd = 'SATA'
+      server.ssd = 'SATA';
       if (server.description.includes('NVME')) {
-        server.ssd = 'NVME'
+        server.ssd = 'NVME';
       }
     }
     server.hasEcc = !!server.is_ecc;
@@ -165,21 +166,26 @@ async function getDataFromDisk(options) {
   }
 
   sorters.push(['actualPrice', 'asc']);
-  return orderByFunc(filteredServers, ...sorters.reduce((prev, curr) => {
-    prev[0].push(curr[0]);
-    prev[1].push(curr[1]);
-    return prev;
-  }, [[], []])).map((server) => pick(server, [
-    'actualPrice',
-    'hddSum',
-    'cpu',
-    'ssd',
-    'hasEcc',
-    'comparison',
-    'id',
-    'link',
-    'ram_size',
-  ]));
+  return orderByFunc(
+    filteredServers,
+    ...sorters.reduce((prev, curr) => {
+      prev[0].push(curr[0]);
+      prev[1].push(curr[1]);
+      return prev;
+    }, [[], []])
+  ).map((server) =>
+    pick(server, [
+      'actualPrice',
+      'hddSum',
+      'cpu',
+      'ssd',
+      'hasEcc',
+      'comparison',
+      'id',
+      'link',
+      'ram_size'
+    ])
+  );
 }
 
 async function updateDataFromHetzner(removeData = true) {
@@ -219,5 +225,5 @@ async function updateDataFromHetzner(removeData = true) {
 
 module.exports = {
   updateDataFromHetzner,
-  getDataFromDisk,
+  getDataFromDisk
 };

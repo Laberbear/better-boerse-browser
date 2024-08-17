@@ -4,32 +4,27 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import '@fontsource/inter';
-import { CssVarsProvider } from '@mui/joy/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { CssVarsProvider } from '@mui/joy/styles';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <App />,
-  },
+    path: '/',
+    element: <App />
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  
-  <CssVarsProvider
-  defaultMode="dark">
-  {/* must be used under CssVarsProvider */}
-  <CssBaseline />
+  <CssVarsProvider defaultMode='dark'>
+    {/* must be used under CssVarsProvider */}
+    <CssBaseline />
 
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
-</CssVarsProvider>
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
+  </CssVarsProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

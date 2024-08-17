@@ -1,3 +1,5 @@
+/* eslint-disable no-empty */
+/* eslint-disable no-unused-vars */
 const fetch = require('node-fetch');
 const Document = require('queryselector-lite');
 
@@ -9,26 +11,23 @@ let WEBSITE_CACHE = {};
 try {
   CPU_CACHE = JSON.parse(fs.readFileSync(`${__dirname}/cpuCache.json`).toString());
 } catch (error) {
-
 }
 
 try {
   COMPARE_CACHE = JSON.parse(fs.readFileSync(`${__dirname}/compareCache.json`).toString());
 } catch (error) {
-
 }
 
 try {
   WEBSITE_CACHE = JSON.parse(fs.readFileSync(`${__dirname}/websiteCache.json`).toString());
 } catch (error) {
-
 }
 
 console.log(__dirname);
 
 async function getTechnicalCityCpuName(cpuString) {
   if (cpuString.toLowerCase().includes('xeon')) {
-    cpuString = cpuString.replace(/(v|V)/, ' v')
+    cpuString = cpuString.replace(/(v|V)/, ' v');
   }
   if (CPU_CACHE[cpuString] !== undefined) {
     // console.log('Data Cache Hit!');
@@ -44,13 +43,12 @@ async function getTechnicalCityCpuName(cpuString) {
   return label;
 }
 
-
 function cpuNameMatcher(aCpu, bCpu) {
   return aCpu === bCpu || bCpu.includes(aCpu) || aCpu.includes(bCpu);
 }
 
 function sanitizeCpuName(cpuName) {
-  return cpuName.replace(/\s/gm, '-')
+  return cpuName.replace(/\s/gm, '-');
 }
 
 async function compareCPUs(cpu1, cpu2) {
@@ -58,7 +56,7 @@ async function compareCPUs(cpu1, cpu2) {
     return null;
   }
   const sanitizedCpu1 = sanitizeCpuName(cpu1);
-  const sanitizedCpu2 = sanitizeCpuName(cpu2);;
+  const sanitizedCpu2 = sanitizeCpuName(cpu2);
   if (sanitizedCpu1 === sanitizedCpu2) {
     return { faster: { cpuName: sanitizedCpu1, cpuIndex: 0, amountInPercent: 0 } };
   }
@@ -97,17 +95,20 @@ async function compareCPUs(cpu1, cpu2) {
 
       return {
         cpu: subSubDoc.querySelector('.title').contents.replace(/(\t|\r|\s)/, '').trim(),
-        value: parseInt(subSubDoc.querySelector('.avarage').contents.replace(/(\t|\r|\s)/, '').trim(), 10),
+        value: parseInt(subSubDoc.querySelector('.avarage').contents.replace(/(\t|\r|\s)/, '').trim(), 10)
       };
     });
     return {
       results,
-      name,
+      name
     };
   });
   const cpuName = benchmarkSummary.replace(/outperforms.*/, '').trim().replace(/\s/gm, '-');
-  const amountInPercent = parseInt(benchmarkSummary.replace(/.*by.+?(?=\d)/, '').replace(/based.*/, '').replace('%', '').trim(), 10);
-  console.log(benchmarkSummary.replace(/.*by.+?(?=\d)/, '').replace(/based.*/, '').replace('%', '').trim())
+  const amountInPercent = parseInt(
+    benchmarkSummary.replace(/.*by.+?(?=\d)/, '').replace(/based.*/, '').replace('%', '').trim(),
+    10
+  );
+  console.log(benchmarkSummary.replace(/.*by.+?(?=\d)/, '').replace(/based.*/, '').replace('%', '').trim());
   let cpuIndex = null;
   if (cpuNameMatcher(cpuName, sanitizedCpu1)) {
     cpuIndex = 0;
@@ -117,7 +118,7 @@ async function compareCPUs(cpu1, cpu2) {
   const faster = {
     cpuName,
     cpuIndex,
-    amountInPercent,
+    amountInPercent
   };
   COMPARE_CACHE[`${sanitizedCpu1}${sanitizedCpu2}`] = {
     ratings,
@@ -146,7 +147,7 @@ async function saveCaches() {
 module.exports = {
   compareCPUs,
   hetznerToTechnicalCity,
-  saveCaches,
+  saveCaches
 };
 
 // hetznerToTechnicalCity('Intel Core i7-7700')
