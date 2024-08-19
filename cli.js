@@ -25,15 +25,15 @@ const CPU_BLACKLIST = [
 
 async function main() {
   await updateDataFromHetzner(false);
-  const sortedServers = await getDataFromDisk({
+  const servers = await getDataFromDisk({
     maxPrice: MAX_PRICE,
     minimumMemory: MINIMUM_RAM_GB,
     minimumStorage: MINIMUM_HDD_GB,
     cpuToCompare: CPU_TO_COMPARE,
     cpuBlacklist: CPU_BLACKLIST
   });
-  fs.writeFileSync('output.json', JSON.stringify(sortedServers, '', 2));
-  fs.writeFileSync('output.log', sortedServers.reduce((prev, server) => `${prev + server.summary}\n`, ''));
+  fs.writeFileSync('output.json', JSON.stringify(servers, '', 2));
+  fs.writeFileSync('output.log', servers.reduce((prev, server) => `${prev + server.summary}\n`, ''));
 
   console.log('See ./output.log and ./output.json for output');
 }

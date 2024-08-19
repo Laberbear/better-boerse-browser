@@ -199,6 +199,7 @@ async function getDataFromDisk(options) {
     pick(server, [
       'actualPrice',
       'hddSum',
+      'summary',
       'cpu',
       'ssd',
       'hasEcc',

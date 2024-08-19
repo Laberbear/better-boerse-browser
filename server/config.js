@@ -1,3 +1,3 @@
 module.exports = {
-  dbFile: '../data/sqlite.db'
+  dbFile: `${__dirname}/../data/sqlite.db`
 };
