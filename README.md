@@ -10,7 +10,13 @@ Running this code might conflict with the usage policies of Hetzner or Technical
 
 ## Features
 
-- Filtering that actually makes sense
+- Filtering by
+  - Price
+  - Storage
+  - Memory
+  - Performance
+  - SSD
+  - ECC
 - Sorting
 - Proper Storage Space calculation
 - Performance Comparisons against a few common CPUs
@@ -37,7 +43,7 @@ docker run -d \
     -p 3001:3001 \
     --restart unless-stopped \
     -v DATA_FOLDER_ON_HOST:/opt/data
-    laberbear/better-boerse-browser:0.1.0
+    laberbear/better-boerse-browser:0.1.3
 Go to http://localhost:3001
 ```
 

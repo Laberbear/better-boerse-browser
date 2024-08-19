@@ -34,6 +34,9 @@ const init = async () => {
         cpuBlacklist: request.query.cpuBlacklist,
         minimumMemory: request.query.minimumMemory,
         minimumStorage: request.query.minimumStorage,
+        minPerformance: request.query.minPerformance,
+        onlyWithSsd: request.query.onlyWithSsd,
+        onlyWithEcc: request.query.onlyWithEcc,
         cpuToCompare: request.query.cpuToCompare,
         orderBy: request.query.orderBy,
         orderDirection: request.query.orderDirection

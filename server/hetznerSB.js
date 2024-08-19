@@ -15,7 +15,7 @@ const { orderBy: orderByFunc, pick } = require('lodash');
 const { bulkInsertServer } = require('./db');
 
 async function getDataFromDisk(options) {
-  console.log('getting request', options);
+  console.log('Request Servers', JSON.stringify(options));
   let existingData;
   try {
     existingData = JSON.parse(fs.readFileSync(`${__dirname}/data.json`).toString());
@@ -69,18 +69,24 @@ async function getDataFromDisk(options) {
       maxPrice = parseInt(options.maxPrice, 10);
     } catch (error) {}
   }
-
-  console.log(`
-    Querying data with settings
-    minPrice: ${minPrice}
-    maxPrice: ${maxPrice}
-    minimumStorage: ${minimumStorage}
-    minimumMemory: ${minimumMemory}
-    cpuBlacklist: ${cpuBlacklist}
-    cpuToCompare: ${cpuToCompare}
-    orderBy: ${orderBy}
-    orderDirection: ${orderDirection}
-    `);
+  let minPerformance = -9999;
+  if (options.minPerformance) {
+    try {
+      minPerformance = parseInt(options.minPerformance, 10);
+    } catch (error) {}
+  }
+  let onlyWithSsd = false;
+  if (options.onlyWithSsd) {
+    try {
+      onlyWithSsd = options.onlyWithSsd === 'true';
+    } catch (error) {}
+  }
+  let onlyWithEcc = false;
+  if (options.onlyWithEcc) {
+    try {
+      onlyWithEcc = options.onlyWithEcc === 'true';
+    } catch (error) {}
+  }
 
   const { server: servers } = existingData;
   for (const server of servers) {
@@ -113,6 +119,13 @@ async function getDataFromDisk(options) {
     const technicalCityName = await hetznerToTechnicalCity(server.cpu);
     const compareData = await compareCPUs(cpuToCompare, technicalCityName);
     server.comparison = compareData;
+    if (!compareData?.faster) {
+      server.relativePerformance = 0;
+    } else if (compareData.faster.cpuIndex === 0) {
+      server.relativePerformance = -1 * compareData.faster.amountInPercent;
+    } else {
+      server.relativePerformance = compareData.faster.amountInPercent;
+    }
     server.summary = `
       CPU: ${server.cpu}
       Memory: ${server.ram_size} GB
@@ -139,6 +152,15 @@ async function getDataFromDisk(options) {
       return false;
     }
     if (server.actualPrice < minPrice) {
+      return false;
+    }
+    if (onlyWithSsd && !server.ssd) {
+      return false;
+    }
+    if (onlyWithEcc && !server.hasEcc) {
+      return false;
+    }
+    if (server.relativePerformance < minPerformance) {
       return false;
     }
     return true;

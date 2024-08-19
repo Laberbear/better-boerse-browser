@@ -4,6 +4,17 @@
     padding-right: 10px;
   }
 }
+.filter-expanded {
+  display: flex;
+  padding-top: 10px;
+  div {
+    padding-right: 10px;
+  }
+}
+
+.filter-container {
+  padding-bottom: 10px;
+}
 
 .App {
   height: 100vh;
@@ -19,11 +30,21 @@
   width: 150px;
 }
 .filter-memory {
-  width: 150px;
-  
+  width: 150px;  
+}
+.filter-expand-container {
+  display: flex;
+  align-items: end;
+}
+.filter-expand {
+  height: 35px;
 }
 .filter-cpuCompare {
   width: 170px;
+}
+.filter-checkbox-container {
+  display: flex;
+  align-items: center;
 }
 .cpuBlacklist {
   width: 250px;
