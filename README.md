@@ -42,7 +42,7 @@ For the web app simply use Docker:
 docker run -d \
     -p 3001:3001 \
     --restart unless-stopped \
-    -v DATA_FOLDER_ON_HOST:/opt/data
+    -v DATA_FOLDER_ON_HOST:/opt/data \
     laberbear/better-boerse-browser:0.1.3
 Go to http://localhost:3001
 ```
