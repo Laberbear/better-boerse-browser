@@ -15,7 +15,6 @@ const { orderBy: orderByFunc, pick } = require('lodash');
 const { bulkInsertServer } = require('./db');
 
 async function getDataFromDisk(options) {
-  console.log('Request Servers', JSON.stringify(options));
   let existingData;
   try {
     existingData = JSON.parse(fs.readFileSync(`${__dirname}/data.json`).toString());

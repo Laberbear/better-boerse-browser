@@ -1,6 +1,7 @@
 const Hapi = require('@hapi/hapi');
 const path = require('path');
 const { getDataFromDisk, updateDataFromHetzner } = require('./hetznerSB');
+const logger = require('./logger');
 
 const init = async () => {
   await updateDataFromHetzner(false);
@@ -27,8 +28,10 @@ const init = async () => {
   server.route({
     method: 'GET',
     path: '/api/servers',
-    handler: (request) =>
-      getDataFromDisk({
+    handler: async (request) => {
+      logger.info(`${ new Date().toISOString()} Server Request from ${request.info.remoteAddress}`);
+      logger.info(`Request Query: ${JSON.stringify(request.query)}`)
+      return await getDataFromDisk({
         minPrice: request.query.minPrice,
         maxPrice: request.query.maxPrice,
         cpuBlacklist: request.query.cpuBlacklist,
@@ -41,6 +44,7 @@ const init = async () => {
         orderBy: request.query.orderBy,
         orderDirection: request.query.orderDirection
       })
+    }
   });
 
   await server.start();
