@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-empty */
 
-const getHetznerUrl = () => `https://www.hetzner.com/_resources/app/jsondata/live_data_sb_EUR.json?m=${Date.now()}`;
+const getHetznerUrl = () => `https://www.hetzner.com/_resources/app/data/app/live_data_sb_EUR.json`;
 
 const fetch = require('node-fetch');
 const fs = require('fs');

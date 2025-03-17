@@ -29,8 +29,8 @@ const init = async () => {
     method: 'GET',
     path: '/api/servers',
     handler: async (request) => {
-      logger.info(`${ new Date().toISOString()} Server Request from ${request.info.remoteAddress}`);
-      logger.info(`Request Query: ${JSON.stringify(request.query)}`)
+      logger.info(`${new Date().toISOString()} Server Request from ${request.info.remoteAddress}`);
+      logger.info(`Request Query: ${JSON.stringify(request.query)}`);
       return await getDataFromDisk({
         minPrice: request.query.minPrice,
         maxPrice: request.query.maxPrice,
@@ -43,7 +43,7 @@ const init = async () => {
         cpuToCompare: request.query.cpuToCompare,
         orderBy: request.query.orderBy,
         orderDirection: request.query.orderDirection
-      })
+      });
     }
   });
 

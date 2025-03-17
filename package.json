@@ -1,6 +1,6 @@
 {
   "name": "better-boerse-browser",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Better Börse Browser (not affiliated with Hetzner at all)",
   "main": "cli.js",
   "packageManager": "pnpm@10.6.4",
