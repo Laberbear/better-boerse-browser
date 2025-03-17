@@ -1,3 +1,10 @@
 packages:
   - frontend
   - server
+onlyBuiltDependencies:
+  - better-sqlite3
+  - core-js
+  - core-js-pure
+  - dprint
+  - esbuild
+  - sqlite3
